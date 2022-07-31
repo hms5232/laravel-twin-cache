@@ -1,1 +1,5 @@
 /vendor/
+# consider not everybody use Phpstorm, so ignore this folder.
+.idea
+# https://getcomposer.org/doc/02-libraries.md#lock-file
+composer.lock
