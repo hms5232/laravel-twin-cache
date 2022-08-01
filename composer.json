@@ -25,5 +25,13 @@
                 "Hms5232\\LaravelTwinCache\\TwinCacheServiceProvider"
             ]
         }
+    },
+    "require-dev": {
+        "squizlabs/php_codesniffer": "*"
+    },
+    "scripts": {
+        "test": "composer lint",
+        "lint": "./vendor/bin/phpcs",
+        "lint:fix": "./vendor/bin/phpcbf"
     }
 }

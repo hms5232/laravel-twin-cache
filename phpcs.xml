@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<ruleset name="laravel-twin-cache">
+    <description>The phpcs config for hms5232/laravel-twin-cache</description>
+
+    <file>src</file>
+    <file>tests</file>
+
+    <!-- display progress -->
+    <arg value="p"/>
+    <!-- use colors in output -->
+    <arg name="colors"/>
+
+    <!-- Include the whole PSR12 standard -->
+    <rule ref="PSR12"/>
+</ruleset>
