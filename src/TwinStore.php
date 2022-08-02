@@ -328,8 +328,11 @@ class TwinStore implements Store
      */
     public function forgetTwin($key)
     {
-        return $this->older->forget($key)
-            && $this->younger->forget($key);
+        $forget_older = $this->older->forget($key);
+        $forget_younger = $this->younger->forget($key);
+
+        // If one of them succeed, this will return ture
+        return $forget_older || $forget_younger;
     }
 
     /**
