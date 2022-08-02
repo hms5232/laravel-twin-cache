@@ -17,23 +17,16 @@ class TwinStore implements Store
     /**
      * The first cache.
      *
-     * @var string
+     * @var \Illuminate\Contracts\Cache\Repository
      */
     protected $older;
 
     /**
      * The second cache.
      *
-     * @var string
+     * @var \Illuminate\Contracts\Cache\Repository
      */
     protected $younger;
-
-    /**
-     * The twin cache.
-     *
-     * @var array
-     */
-    protected $store;
 
     /**
      * The synced cache ttl.
@@ -49,9 +42,10 @@ class TwinStore implements Store
      */
     public function __construct()
     {
-        $this->setDriveName();
         $this->setPrefix();
         $this->setTwinTtl();
+        $this->older = $this->older();
+        $this->younger = $this->younger();
     }
 
     /**
@@ -62,7 +56,7 @@ class TwinStore implements Store
      */
     public function get($key)
     {
-        return Cache::store($this->older)->get($key);
+        return $this->older->get($key);
     }
 
     /**
@@ -75,7 +69,7 @@ class TwinStore implements Store
      */
     public function many(array $keys)
     {
-        return Cache::store($this->older)->many($keys);
+        return $this->older->many($keys);
     }
 
     /**
@@ -88,7 +82,7 @@ class TwinStore implements Store
      */
     public function put($key, $value, $seconds)
     {
-        return Cache::store($this->older)->put($key, $value, $seconds);
+        return $this->older->put($key, $value, $seconds);
     }
 
     /**
@@ -100,7 +94,7 @@ class TwinStore implements Store
      */
     public function putMany(array $values, $seconds)
     {
-        return Cache::store($this->older)->putMany($values, $seconds);
+        return $this->older->putMany($values, $seconds);
     }
 
     /**
@@ -112,7 +106,7 @@ class TwinStore implements Store
      */
     public function increment($key, $value = 1)
     {
-        return Cache::store($this->older)->increment($key, $value);
+        return $this->older->increment($key, $value);
     }
 
     /**
@@ -124,7 +118,7 @@ class TwinStore implements Store
      */
     public function decrement($key, $value = 1)
     {
-        return Cache::store($this->older)->decrement($key, $value);
+        return $this->older->decrement($key, $value);
     }
 
     /**
@@ -136,7 +130,7 @@ class TwinStore implements Store
      */
     public function forever($key, $value)
     {
-        return Cache::store($this->older)->forever($key, $value);
+        return $this->older->forever($key, $value);
     }
 
     /**
@@ -147,7 +141,7 @@ class TwinStore implements Store
      */
     public function forget($key)
     {
-        return Cache::store($this->older)->forget($key);
+        return $this->older->forget($key);
     }
 
     /**
@@ -157,7 +151,7 @@ class TwinStore implements Store
      */
     public function flush()
     {
-        return Cache::store($this->older)->flush();
+        return $this->older->flush();
     }
 
     /**
@@ -192,28 +186,23 @@ class TwinStore implements Store
     }
 
     /**
-     * Set the store name of cache.
+     * Get the older store.
      *
-     * @return void
+     * @return \Illuminate\Contracts\Cache\Repository
      */
-    protected function setDriveName()
+    protected function older()
     {
-        $this->older = $this->getDriveName('older');
-        $this->younger = $this->getDriveName('younger');
-        $this->store = [
-            $this->older,
-            $this->younger
-        ];
+        return Cache::store($this->getDriveName('older'));
     }
 
     /**
-     * Get the store.
+     * Get the older store.
      *
-     * @return array
+     * @return \Illuminate\Contracts\Cache\Repository
      */
-    public function getTwinStores()
+    protected function younger()
     {
-        return $this->store;
+        return Cache::store($this->getDriveName('younger'));
     }
 
     /**
@@ -246,7 +235,7 @@ class TwinStore implements Store
      */
     protected function syncTwin($key, $value, $seconds = null)
     {
-        return Cache::store($this->older)->put($key, $value, $seconds ?? $this->getTwinTtl());
+        return $this->older->put($key, $value, $seconds ?? $this->getTwinTtl());
     }
 
     /**
@@ -257,10 +246,10 @@ class TwinStore implements Store
      */
     public function getTwin($key)
     {
-        if (Cache::store($this->older)->has($key)) {
-            return Cache::store($this->older)->get($key);
-        } elseif (Cache::store($this->younger)->has($key)) {
-            $this->syncTwin($key, Cache::store($this->younger)->get($key));
+        if ($this->older->has($key)) {
+            return $this->older->get($key);
+        } elseif ($this->younger->has($key)) {
+            $this->syncTwin($key, $this->younger->get($key));
         }
         return $this->get($key);
     }
@@ -275,8 +264,8 @@ class TwinStore implements Store
      */
     public function putTwin($key, $value, $seconds = null)
     {
-        return Cache::store($this->older)->put($key, $value, $seconds)
-            && Cache::store($this->younger)->put($key, $value, $seconds);
+        return $this->older->put($key, $value, $seconds)
+            && $this->younger->put($key, $value, $seconds);
     }
 
     /**
@@ -288,8 +277,8 @@ class TwinStore implements Store
      */
     public function putManyTwin(array $values, $seconds)
     {
-        return Cache::store($this->older)->putMany($values, $seconds)
-            && Cache::store($this->younger)->putMany($values, $seconds);
+        return $this->older->putMany($values, $seconds)
+            && $this->younger->putMany($values, $seconds);
     }
 
     /**
@@ -301,8 +290,8 @@ class TwinStore implements Store
      */
     public function incrementTwin($key, $value = 1)
     {
-        return Cache::store($this->older)->increment($key, $value)
-            && Cache::store($this->younger)->increment($key, $value);
+        return $this->older->increment($key, $value)
+            && $this->younger->increment($key, $value);
     }
 
     /**
@@ -314,8 +303,8 @@ class TwinStore implements Store
      */
     public function decrementTwin($key, $value = 1)
     {
-        return Cache::store($this->older)->decrement($key, $value)
-            && Cache::store($this->younger)->decrement($key, $value);
+        return $this->older->decrement($key, $value)
+            && $this->younger->decrement($key, $value);
     }
 
     /**
@@ -327,8 +316,8 @@ class TwinStore implements Store
      */
     public function foreverTwin($key, $value)
     {
-        return Cache::store($this->older)->forever($key, $value)
-            && Cache::store($this->younger)->forever($key, $value);
+        return $this->older->forever($key, $value)
+            && $this->younger->forever($key, $value);
     }
 
     /**
@@ -339,8 +328,8 @@ class TwinStore implements Store
      */
     public function forgetTwin($key)
     {
-        return Cache::store($this->older)->forget($key)
-            && Cache::store($this->younger)->forget($key);
+        return $this->older->forget($key)
+            && $this->younger->forget($key);
     }
 
     /**
@@ -350,7 +339,7 @@ class TwinStore implements Store
      */
     public function flushTwin()
     {
-        return Cache::store($this->older)->flush()
-            && Cache::store($this->younger)->flush();
+        return $this->older->flush()
+            && $this->younger->flush();
     }
 }
