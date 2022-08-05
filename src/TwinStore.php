@@ -52,11 +52,12 @@ class TwinStore implements Store
      * Retrieve an item from the cache by key.
      *
      * @param  string|array  $key
+     * @param  mixed  $default
      * @return mixed
      */
-    public function get($key)
+    public function get($key, $default = null)
     {
-        return $this->older->get($key);
+        return $this->older->get($key, $default);
     }
 
     /**
@@ -242,16 +243,17 @@ class TwinStore implements Store
      * Retrieve an item from the twin cache by key.
      *
      * @param  string|array  $key
+     * @param  mixed  $default
      * @return mixed
      */
-    public function getTwin($key)
+    public function getTwin($key, $default = null)
     {
         if ($this->older->has($key)) {
             return $this->older->get($key);
         } elseif ($this->younger->has($key)) {
             $this->syncTwin($key, $this->younger->get($key));
         }
-        return $this->get($key);
+        return $this->get($key, $default);
     }
 
     /**
