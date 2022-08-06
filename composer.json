@@ -27,11 +27,20 @@
         }
     },
     "require-dev": {
-        "squizlabs/php_codesniffer": "*"
+        "squizlabs/php_codesniffer": "*",
+        "orchestra/testbench": "^6.0",
+        "nunomaduro/collision": "^5.10"
     },
     "scripts": {
-        "test": "composer lint",
+        "test": "composer lint ; composer testbench",
         "lint": "./vendor/bin/phpcs",
-        "lint:fix": "./vendor/bin/phpcbf"
+        "lint:fix": "./vendor/bin/phpcbf",
+        "testbench": "./vendor/bin/testbench package:test"
+    },
+    "prefer-stable": true,
+    "autoload-dev": {
+        "psr-4": {
+            "Hms5232\\LaravelTwinCache\\Tests\\": "tests/"
+        }
     }
 }

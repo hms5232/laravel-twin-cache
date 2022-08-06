@@ -3,3 +3,4 @@
 .idea
 # https://getcomposer.org/doc/02-libraries.md#lock-file
 composer.lock
+.phpunit.cache/
