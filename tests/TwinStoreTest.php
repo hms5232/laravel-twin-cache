@@ -64,6 +64,36 @@ class TwinStoreTest extends TestCase
     }
 
     /**
+     * test of forget().
+     *
+     * @return void
+     */
+    public function testForget()
+    {
+        $this->getOlderStore()->put('Donburi', 'jp');
+        $this->getOlderStore()->put('risotto', 'it');
+
+        $this->getOlderStore()->forget('risotto');
+        $this->assertSame('jp', $this->getOlderStore()->get('Donburi'));
+        $this->assertNull($this->getOlderStore()->get('risotto'));
+    }
+
+    /**
+     * test of flush().
+     *
+     * @return void
+     */
+    public function testFlush()
+    {
+        $this->getOlderStore()->put('Donburi', 'jp');
+        $this->getOlderStore()->put('risotto', 'it');
+
+        $this->getOlderStore()->flush();
+        $this->assertNull($this->getOlderStore()->get('Donburi'));
+        $this->assertNull($this->getOlderStore()->get('risotto'));
+    }
+
+    /**
      * test of getTwin().
      *
      * @return void
@@ -113,5 +143,43 @@ class TwinStoreTest extends TestCase
         $this->getTwinStore()->putTwin('forest', 'random');
         $this->assertSame('random', $this->getOlderStore()->get('forest'));
         $this->assertSame('random', $this->getYoungerStore()->get('forest'));
+    }
+
+    /**
+     * test of forgetTwin().
+     *
+     * @return void
+     */
+    public function testForgetTwin()
+    {
+        $this->getOlderStore()->put('Donburi', 'jp');
+        $this->getOlderStore()->put('risotto', 'it');
+        $this->getYoungerStore()->put('Donburi', 'jp');
+        $this->getYoungerStore()->put('risotto', 'it');
+
+        $this->getTwinStore()->forgetTwin('risotto');
+        $this->assertSame('jp', $this->getOlderStore()->get('Donburi'));
+        $this->assertNull($this->getOlderStore()->get('risotto'));
+        $this->assertSame('jp', $this->getYoungerStore()->get('Donburi'));
+        $this->assertNull($this->getYoungerStore()->get('risotto'));
+    }
+
+    /**
+     * test of flushTwin().
+     *
+     * @return void
+     */
+    public function testFlushTwin()
+    {
+        $this->getOlderStore()->put('Donburi', 'jp');
+        $this->getOlderStore()->put('risotto', 'it');
+        $this->getYoungerStore()->put('Donburi', 'jp');
+        $this->getYoungerStore()->put('risotto', 'it');
+
+        $this->getTwinStore()->flushTwin();
+        $this->assertNull($this->getOlderStore()->get('Donburi'));
+        $this->assertNull($this->getOlderStore()->get('risotto'));
+        $this->assertNull($this->getYoungerStore()->get('Donburi'));
+        $this->assertNull($this->getYoungerStore()->get('risotto'));
     }
 }
