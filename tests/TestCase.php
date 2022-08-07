@@ -2,6 +2,8 @@
 
 namespace Hms5232\LaravelTwinCache\Tests;
 
+use Illuminate\Support\Facades\Cache;
+
 class TestCase extends \Orchestra\Testbench\TestCase
 {
     /**
@@ -68,5 +70,50 @@ class TestCase extends \Orchestra\Testbench\TestCase
     protected function getApplicationTimezone($app)
     {
         return 'Asia/Taipei';
+    }
+
+    /**
+     * Clean up the testing environment before the next test.
+     *
+     * @return void
+     */
+    protected function tearDown(): void
+    {
+        $this->getOlderStore()->flush();
+        $this->getYoungerStore()->flush();
+
+        parent::tearDown();
+    }
+
+    /**
+     * Get twin store.
+     *
+     * @return \Illuminate\Contracts\Cache\Repository
+     */
+    protected function getTwinStore(): \Illuminate\Contracts\Cache\Repository
+    {
+        return Cache::store('twin');
+    }
+
+    /**
+     * Get older store.
+     *
+     * @return \Illuminate\Contracts\Cache\Repository
+     */
+    protected function getOlderStore(): \Illuminate\Contracts\Cache\Repository
+    {
+        // This name should same as above config.
+        return Cache::store('array');
+    }
+
+    /**
+     * Get younger store.
+     *
+     * @return \Illuminate\Contracts\Cache\Repository
+     */
+    protected function getYoungerStore(): \Illuminate\Contracts\Cache\Repository
+    {
+        // This name should same as above config.
+        return Cache::store('file');
     }
 }
