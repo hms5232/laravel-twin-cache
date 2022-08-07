@@ -13,8 +13,8 @@ jobs:
   build:
 
     strategy:
+      fail-fast: false
       matrix:
-        fail-fast: false
         php-version: ['7.3', '7.4', '8.0']
 
     # OS should support above PHP version
