@@ -46,6 +46,16 @@ class TestCase extends \Orchestra\Testbench\TestCase
                 'younger' => 'file',
                 'sync_ttl' => 120,
             ],
+
+            // Laravel bulit-in
+            'array' => [
+                'driver' => 'array',
+                'serialize' => false,
+            ],
+            'file' => [
+                'driver' => 'file',
+                'path' => storage_path('framework/cache/data'),
+            ],
         ]);
     }
 
