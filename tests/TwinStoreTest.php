@@ -44,11 +44,11 @@ class TwinStoreTest extends TestCase
      */
     public function testGet()
     {
-        $this->assertNull($this->getOlderStore()->get('single'));
-        $this->assertSame('dog', $this->getOlderStore()->get('single', 'dog'));
+        $this->assertNull($this->getTwinStore()->get('single'));
+        $this->assertSame('dog', $this->getTwinStore()->get('single', 'dog'));
 
         $this->getOlderStore()->put('cat', 'meow');
-        $this->assertSame('meow', $this->getOlderStore()->get('cat'));
+        $this->assertSame('meow', $this->getTwinStore()->get('cat'));
     }
 
     /**
@@ -59,8 +59,9 @@ class TwinStoreTest extends TestCase
     public function testPut()
     {
         $this->assertNull($this->getOlderStore()->get('rice'));
-        $this->getOlderStore()->put('rice', 'Donburi');
+        $this->getTwinStore()->put('rice', 'Donburi');
         $this->assertSame('Donburi', $this->getOlderStore()->get('rice'));
+        $this->assertNull($this->getYoungerStore()->get('rice'));
     }
 
     /**
@@ -72,10 +73,14 @@ class TwinStoreTest extends TestCase
     {
         $this->getOlderStore()->put('Donburi', 'jp');
         $this->getOlderStore()->put('risotto', 'it');
+        $this->getYoungerStore()->put('Donburi', 'jp');
+        $this->getYoungerStore()->put('risotto', 'it');
 
-        $this->getOlderStore()->forget('risotto');
+        $this->getTwinStore()->forget('risotto');
         $this->assertSame('jp', $this->getOlderStore()->get('Donburi'));
         $this->assertNull($this->getOlderStore()->get('risotto'));
+        $this->assertSame('jp', $this->getYoungerStore()->get('Donburi'));
+        $this->assertSame('it', $this->getYoungerStore()->get('risotto'));
     }
 
     /**
@@ -87,10 +92,14 @@ class TwinStoreTest extends TestCase
     {
         $this->getOlderStore()->put('Donburi', 'jp');
         $this->getOlderStore()->put('risotto', 'it');
+        $this->getYoungerStore()->put('Donburi', 'jp');
+        $this->getYoungerStore()->put('risotto', 'it');
 
-        $this->getOlderStore()->flush();
+        $this->getTwinStore()->flush();
         $this->assertNull($this->getOlderStore()->get('Donburi'));
         $this->assertNull($this->getOlderStore()->get('risotto'));
+        $this->assertSame('jp', $this->getYoungerStore()->get('Donburi'));
+        $this->assertSame('it', $this->getYoungerStore()->get('risotto'));
     }
 
     /**
