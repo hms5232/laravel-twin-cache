@@ -65,6 +65,49 @@ class TwinStoreTest extends TestCase
     }
 
     /**
+     * test of increment().
+     *
+     * @return void
+     */
+    public function testIncrement()
+    {
+        $this->assertNull($this->getOlderStore()->get('butter-knife'));
+        $this->getTwinStore()->put('butter-knife', '1');
+        $this->assertEquals(1, $this->getOlderStore()->get('butter-knife'));
+
+        // increment default value
+        $this->getTwinStore()->increment('butter-knife');
+        $this->assertSame(2, $this->getOlderStore()->get('butter-knife'));
+        $this->assertNull($this->getYoungerStore()->get('butter-knife'));
+
+        // increment specific value
+        $this->getTwinStore()->increment('butter-knife', 2);
+        $this->assertSame(4, $this->getOlderStore()->get('butter-knife'));
+        $this->assertNull($this->getYoungerStore()->get('butter-knife'));
+    }
+
+    /**
+     * test of decrement().
+     *
+     * @return void
+     */
+    public function testDecrement()
+    {
+        $this->getTwinStore()->put('tag', 114);
+        $this->assertEquals(114, $this->getOlderStore()->get('tag'));
+
+        // decrement default value
+        $this->getTwinStore()->decrement('tag');
+        $this->assertSame(113, $this->getOlderStore()->get('tag'));
+        $this->assertNull($this->getYoungerStore()->get('tag'));
+
+        // decrement specific value
+        $this->getTwinStore()->decrement('tag', 60);
+        $this->assertSame(53, $this->getOlderStore()->get('tag'));
+        $this->assertNull($this->getYoungerStore()->get('tag'));
+    }
+
+    /**
      * test of forget().
      *
      * @return void
@@ -152,6 +195,53 @@ class TwinStoreTest extends TestCase
         $this->getTwinStore()->putTwin('forest', 'random');
         $this->assertSame('random', $this->getOlderStore()->get('forest'));
         $this->assertSame('random', $this->getYoungerStore()->get('forest'));
+    }
+
+    /**
+     * test of incrementTwin().
+     *
+     * @return void
+     */
+    public function testIncrementTwin()
+    {
+        $this->assertNull($this->getTwinStore()->get('butter-knife'));
+        $this->getOlderStore()->put('butter-knife', '1');
+        $this->getYoungerStore()->put('butter-knife', '1');
+        $this->assertEquals(1, $this->getOlderStore()->get('butter-knife'));
+        $this->assertEquals(1, $this->getYoungerStore()->get('butter-knife'));
+
+        // increment default value
+        $this->getTwinStore()->incrementTwin('butter-knife');
+        $this->assertSame(2, $this->getOlderStore()->get('butter-knife'));
+        $this->assertSame(2, $this->getYoungerStore()->get('butter-knife'));
+
+        // increment specific value
+        $this->getTwinStore()->incrementTwin('butter-knife', 2);
+        $this->assertSame(4, $this->getOlderStore()->get('butter-knife'));
+        $this->assertSame(4, $this->getYoungerStore()->get('butter-knife'));
+    }
+
+    /**
+     * test of decrementTwin().
+     *
+     * @return void
+     */
+    public function testDecrementTwin()
+    {
+        $this->getOlderStore()->put('tag', 114);
+        $this->getYoungerStore()->put('tag', 114);
+        $this->assertEquals(114, $this->getOlderStore()->get('tag'));
+        $this->assertEquals(114, $this->getYoungerStore()->get('tag'));
+
+        // decrement default value
+        $this->getTwinStore()->decrementTwin('tag');
+        $this->assertSame(113, $this->getOlderStore()->get('tag'));
+        $this->assertSame(113, $this->getYoungerStore()->get('tag'));
+
+        // decrement specific value
+        $this->getTwinStore()->decrementTwin('tag', 60);
+        $this->assertSame(53, $this->getOlderStore()->get('tag'));
+        $this->assertSame(53, $this->getYoungerStore()->get('tag'));
     }
 
     /**
