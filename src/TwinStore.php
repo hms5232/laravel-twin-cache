@@ -81,7 +81,7 @@ class TwinStore implements Store
      * @param  int  $seconds
      * @return bool
      */
-    public function put($key, $value, $seconds)
+    public function put($key, $value, $seconds = null)
     {
         return $this->older->put($key, $value, $seconds);
     }
@@ -93,7 +93,7 @@ class TwinStore implements Store
      * @param  int  $seconds
      * @return bool
      */
-    public function putMany(array $values, $seconds)
+    public function putMany(array $values, $seconds = null)
     {
         return $this->older->putMany($values, $seconds);
     }
@@ -277,7 +277,7 @@ class TwinStore implements Store
      * @param  int  $seconds
      * @return bool
      */
-    public function putManyTwin(array $values, $seconds)
+    public function putManyTwin(array $values, $seconds = null)
     {
         return $this->older->putMany($values, $seconds)
             && $this->younger->putMany($values, $seconds);
