@@ -1,0 +1,17 @@
+name: Laravel 8
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    uses: ./.github/workflows/base-test.yml
+    with:
+      php-version: '["7.3", "7.4", "8.0"]'
+      os: ubuntu-18.04

@@ -1,0 +1,69 @@
+name: Base Test
+# https://docs.github.com/en/actions/using-workflows/reusing-workflows
+
+on:
+  workflow_call:
+    inputs:
+      php-version:
+        required: true
+        type: string
+        description: The PHP versions to run test.
+      os:
+        required: false
+        type: string
+        default: ubuntu-latest
+        description: The runner image to run test. Please notice image supported PHP versions. See https://github.com/shivammathur/setup-php#cloud-osplatform-support for details.
+
+permissions:
+  contents: read
+
+jobs:
+  parse:
+    runs-on: ubuntu-latest
+    outputs:
+      php: ${{ steps.php-version-json.outputs.matrix }}
+    steps:
+      - id: php-version-json
+        name: Parse php-version array
+        run: |
+          echo "::set-output name=matrix::$input"
+        env:
+          input: ${{ inputs.php-version }}
+
+  test:
+    runs-on: ${{ inputs.os }}
+
+    needs: parse
+
+    strategy:
+      fail-fast: false
+      matrix:
+        php-version: ${{ fromJson(needs.parse.outputs.php) }}
+
+    steps:
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+
+      - uses: actions/checkout@v3
+
+      - name: Validate composer.json and composer.lock
+        run: composer validate --strict
+
+      - name: Cache Composer packages
+        id: composer-cache
+        uses: actions/cache@v3
+        with:
+          path: vendor
+          key: ${{ runner.os }}-php${{ matrix.php-version }}-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-php${{ matrix.php-version }}-
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress
+
+      # Add a test script to composer.json, for instance: "test": "vendor/bin/phpunit"
+      # Docs: https://getcomposer.org/doc/articles/scripts.md
+
+      - name: Run test suite
+        run: composer run-script test
