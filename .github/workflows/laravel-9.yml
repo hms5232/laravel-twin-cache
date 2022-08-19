@@ -1,4 +1,4 @@
-name: Laravel 8
+name: Laravel 9
 
 on:
   push:
@@ -10,6 +10,5 @@ jobs:
   test:
     uses: ./.github/workflows/base-test.yml
     with:
-      php-version: '["7.3", "7.4", "8.0"]'
-      os: ubuntu-18.04
-      laravel-version: '8.0'
+      php-version: '["8.0", "8.1"]'
+      laravel-version: '9.0'
