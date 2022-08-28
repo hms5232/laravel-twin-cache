@@ -347,4 +347,16 @@ class TwinStore implements Store
         return $this->older->flush()
             && $this->younger->flush();
     }
+
+    /**
+     * Determines whether an item is present in the cache.
+     *
+     * @param  string  $key
+     * @return bool
+     */
+    public function hasTwin($key)
+    {
+        return $this->older->has($key)
+            || $this->younger->has($key);
+    }
 }

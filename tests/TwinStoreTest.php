@@ -281,4 +281,40 @@ class TwinStoreTest extends TestCase
         $this->assertNull($this->getYoungerStore()->get('Donburi'));
         $this->assertNull($this->getYoungerStore()->get('risotto'));
     }
+
+    /**
+     * test of hasTwin().
+     *
+     * @return void
+     */
+    public function testHasTwin()
+    {
+        // test default value
+        $this->assertNull($this->getTwinStore()->getTwin('shinshi'));
+        $this->assertFalse($this->getTwinStore()->hasTwin('shinshi'));
+
+        // not exist in younger store
+        $this->getOlderStore()->put('MPL', '2.0');
+        $this->assertSame('2.0', $this->getOlderStore()->get('MPL'));
+        $this->assertNull($this->getYoungerStore()->get('MPL'));
+        $this->assertTrue($this->getTwinStore()->hasTwin('MPL'));
+
+        // not exist in older store
+        $this->getYoungerStore()->put('Apache', '2.0');
+        $this->assertNull($this->getOlderStore()->get('Apache'));
+        $this->assertSame('2.0', $this->getYoungerStore()->get('Apache'));
+        $this->assertTrue($this->getTwinStore()->hasTwin('Apache'));
+
+        // key exist both stores
+        $this->getOlderStore()->put('MIT', 'LICENSE');
+        $this->getYoungerStore()->put('MIT', 'LICENSE');
+        $this->assertSame('LICENSE', $this->getOlderStore()->get('MIT'));
+        $this->assertSame('LICENSE', $this->getYoungerStore()->get('MIT'));
+        $this->assertTrue($this->getTwinStore()->hasTwin('MIT'));
+
+        // key not exist both stores
+        $this->assertNull($this->getOlderStore()->get('BSD'));
+        $this->assertNull($this->getYoungerStore()->get('BSD'));
+        $this->assertFalse($this->getTwinStore()->hasTwin('BSD'));
+    }
 }

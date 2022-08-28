@@ -74,6 +74,7 @@ All parameters are same.
 | `forever`        | `foreverTwin`    |
 | `forget`         | `forgetTwin`     |
 | `flush`          | `flushTwin`      |
+| `has`            | `hasTwin`        |
 
 ## LICENSE
 
