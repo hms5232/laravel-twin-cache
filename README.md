@@ -1,4 +1,13 @@
 # laravel-twin-cache
+
+![](https://img.shields.io/packagist/php-v/hms5232/laravel-twin-cache)
+[![](https://img.shields.io/packagist/v/hms5232/laravel-twin-cache)](https://packagist.org/packages/hms5232/laravel-twin-cache)
+[![](https://img.shields.io/packagist/dm/hms5232/laravel-twin-cache)](https://packagist.org/packages/hms5232/laravel-twin-cache)
+[![](https://img.shields.io/packagist/l/hms5232/laravel-twin-cache)](LICENSE)
+
+[![](https://img.shields.io/github/workflow/status/hms5232/laravel-twin-cache/Laravel%208/main?label=Laravel%208)](https://github.com/hms5232/laravel-twin-cache/actions/workflows/laravel-8.yml?query=branch%3Amain)
+[![](https://img.shields.io/github/workflow/status/hms5232/laravel-twin-cache/Laravel%209/main?label=Laravel%209)](https://github.com/hms5232/laravel-twin-cache/actions/workflows/laravel-9.yml?query=branch%3Amain)
+
 Use second cache flexibly in Laravel.
 
 ## Installation
