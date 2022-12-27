@@ -28,9 +28,9 @@ Add `twin` store in `config/cache.php`:
 
     'twin' => [
         'driver' => 'twin',
-        'older' => 'redis',  // First/preferred cache
-        'younger' => 'database',  // Second/backup cache
-        'sync_ttl' => 120,  // TTL for younger synced to older. Default is null => forever
+        'older' => env('TWIN_CACHE_OLDER', 'redis'),  // First/preferred cache
+        'younger' => env('TWIN_CACHE_YOUNGER', 'database'),  // Second/backup cache
+        'sync_ttl' => env('TWIN_CACHE_TTL'),  // TTL for younger synced to older. Default is null => forever
     ],
 ],
 ```
